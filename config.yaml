@@ -1,0 +1,46 @@
+# OPSD PowerDesk Assignment Configuration
+
+data:
+  countries: ['DE', 'FR', 'GB']
+  history_years: 2  # Use past 2 years of data
+  url: "https://data.open-power-system-data.org/time_series/2020-10-06/time_series_60min_singleindex.csv"
+
+modeling:
+  seasonality: 24
+  arima_grid:
+    p: [0, 1, 2]
+    q: [0, 1, 2]
+    d: [0, 1]
+    P: [0, 1]
+    Q: [0, 1]
+    D: [0, 1]
+  
+backtest:
+  warmup_days: 60
+  stride_hours: 24
+  horizon_hours: 24
+
+metrics:
+  - MASE
+  - sMAPE
+  - MSE
+  - RMSE
+  - MAPE
+  - Coverage_80
+
+anomaly:
+  z_score_window_hours: 336
+  z_threshold: 3.0
+  cusum:
+    k: 0.5
+    h: 5.0
+  drift_trigger:
+    alpha: 0.1
+    percentile: 95
+    window_days: 30
+
+simulation:
+  start_history_days: 120
+  min_simulation_hours: 2000
+  adaptation_strategy: "Rolling SARIMA" # Options: "Rolling SARIMA", "Tiny Neural"
+  refit_interval_days: 1 # For Rolling SARIMA
