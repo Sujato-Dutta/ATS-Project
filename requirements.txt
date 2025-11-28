@@ -10,3 +10,4 @@ pyyaml
 requests
 scipy
 torch
+plotly
