@@ -146,34 +146,13 @@ with col1:
     st.plotly_chart(fig, use_container_width=True)
 
 with col2:
-    st.subheader("Performance Metrics")
+    st.subheader("Model Legend")
     
-    def calculate_metrics(y_true, y_pred):
-        mse = mean_squared_error(y_true, y_pred)
-        rmse = np.sqrt(mse)
-        mae = mean_absolute_error(y_true, y_pred)
-        mape = np.mean(np.abs((y_true - y_pred) / y_true)) * 100
-        return rmse, mae, mape
-
     for model in selected_models:
-        rmse, mae, mape = calculate_metrics(filtered_data['actual'], filtered_data[model])
-        
         st.markdown(f"""
         <div class="metric-card">
-            <h4 style="margin:0; color:{colors[model]};">{model.upper()}</h4>
-            <hr style="margin: 5px 0;">
-            <div style="display:flex; justify-content:space-between;">
-                <span>RMSE:</span>
-                <strong>{rmse:.2f}</strong>
-            </div>
-            <div style="display:flex; justify-content:space-between;">
-                <span>MAE:</span>
-                <strong>{mae:.2f}</strong>
-            </div>
-            <div style="display:flex; justify-content:space-between;">
-                <span>MAPE:</span>
-                <strong>{mape:.2f}%</strong>
-            </div>
+            <h3 style="margin:0; color:{colors[model]}; text-align: center;">{model.upper()}</h3>
+            <div style="height: 5px; background-color: {colors[model]}; margin-top: 10px; border-radius: 5px;"></div>
         </div>
         <br>
         """, unsafe_allow_html=True)
