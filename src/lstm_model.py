@@ -31,9 +31,9 @@ class LSTMForecaster(nn.Module):
         last_out = out[:, -1, :]
         # Predict all 24 steps at once (Direct Multi-horizon)
         prediction = self.fc(last_out)
-        return prediction.unsqueeze(2) # [batch, output_window, 1] if we want to match shape, but fc output is [batch, 24]
+        return prediction # [batch, output_window]
 
-def train_lstm(train_series, val_series, input_window=168, output_window=24, epochs=10, batch_size=32, lr=0.001):
+def train_lstm(train_series, val_series, input_window=168, output_window=24, epochs=3, batch_size=32, lr=0.01):
     # Normalize
     mean = train_series.mean()
     std = train_series.std()

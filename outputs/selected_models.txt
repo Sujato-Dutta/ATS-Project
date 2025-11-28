@@ -1,15 +1,15 @@
 DE:
-  Order: (1, 0, 2)
-  Seasonal Order: (1, 0, 0, 24)
-  BIC: 11838.759326565718
+  Order: (2, 1, 2)
+  Seasonal Order: (1, 1, 1, 24)
+  BIC: 10832.12577959931
 
 FR:
-  Order: (0, 1, 2)
-  Seasonal Order: (1, 0, 1, 24)
-  BIC: 12115.353705318252
+  Order: (1, 1, 2)
+  Seasonal Order: (0, 1, 1, 24)
+  BIC: 10792.10426391583
 
 GB:
-  Order: (1, 0, 1)
-  Seasonal Order: (1, 0, 0, 24)
-  BIC: 12478.995752408007
+  Order: (1, 1, 2)
+  Seasonal Order: (0, 1, 1, 24)
+  BIC: 11284.567115960359
 

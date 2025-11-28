@@ -150,54 +150,7 @@ def backtest_country(df, country, orders, config):
     test_results = run_backtest(train_dev_data, test_data, "Test")
     test_results.to_csv(f'outputs/{country}_forecasts_test.csv', index=False)
     
-    # --- LSTM Section ---
-    print(f"  Training LSTM for {country}...")
-    try:
-        from src.lstm_model import train_lstm, predict_lstm
-    except ImportError:
-        from lstm_model import train_lstm, predict_lstm
-    
-    # Train on Train, Validate on Dev
-    lstm_model, mean, std = train_lstm(train_data, dev_data, epochs=20) # Short epochs for demo
-    
-    # Backtest LSTM on Test set
-    # Expanding window for LSTM? Or just rolling?
-    # "Backtest: expanding origin"
-    # For LSTM, usually we train once and then predict rolling.
-    # Let's do rolling prediction on Test set.
-    
-    print(f"  Running LSTM backtest on Test set...")
-    lstm_results = []
-    history = train_dev_data.copy()
-    target_series = test_data
-    stride = config['backtest']['stride_hours']
-    horizon = config['backtest']['horizon_hours']
-    input_window = 168
-    
-    for i in range(0, len(target_series), stride):
-        current_target = target_series.iloc[i : i+horizon]
-        if len(current_target) < horizon:
-            break
-            
-        # Update history
-        current_history = pd.concat([history, target_series.iloc[:i]])
-        
-        yhat = predict_lstm(lstm_model, current_history, mean, std, input_window, horizon)
-        
-        for h in range(horizon):
-            lstm_results.append({
-                'timestamp': current_target.index[h],
-                'y_true': current_target.iloc[h],
-                'yhat': yhat[h],
-                'lo': np.nan, # No PI for simple LSTM
-                'hi': np.nan,
-                'horizon': h + 1
-            })
-            
-    lstm_df = pd.DataFrame(lstm_results)
-    lstm_df.to_csv(f'outputs/{country}_forecasts_test_lstm.csv', index=False)
-    
-    return dev_results, test_results, lstm_df
+    return dev_results, test_results
 
 def evaluate_forecasts(df_results, train_data, country, dataset_name, model_name="SARIMA"):
     # Calculate metrics
@@ -231,7 +184,7 @@ def run_forecasting_pipeline(config):
         df = pd.read_csv(file_path, parse_dates=['timestamp'], index_col='timestamp')
         
         # Run backtest
-        dev_res, test_res, lstm_res = backtest_country(df, country, orders, config)
+        dev_res, test_res = backtest_country(df, country, orders, config)
         
         # Evaluate SARIMA Dev
         n = len(df)
@@ -245,10 +198,6 @@ def run_forecasting_pipeline(config):
         train_dev_data = df['load'].iloc[:int(n * 0.9)]
         m_test = evaluate_forecasts(test_res, train_dev_data, country, "Test", "SARIMA")
         all_metrics.append(m_test)
-        
-        # Evaluate LSTM Test
-        m_lstm = evaluate_forecasts(lstm_res, train_dev_data, country, "Test", "LSTM")
-        all_metrics.append(m_lstm)
         
     # Create comparison table
     metrics_df = pd.DataFrame(all_metrics)
