@@ -51,7 +51,7 @@ country = st.sidebar.selectbox(
 )
 
 # Load Data
-@st.cache_data
+# @st.cache_data (Disabled for demo to ensure fresh data)
 def load_data(country_code):
     file_path = os.path.join("mock_outputs", f"{country_code}_mock_forecasts.csv")
     if os.path.exists(file_path):
